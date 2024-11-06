@@ -1,10 +1,11 @@
-FROM php:8.2-fpm
+FROM php:8.1-fpm
 
 ENV user=putssh
 ENV uid=1100
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    libssl-dev \ 
     git \
     curl \
     libpng-dev \
@@ -16,9 +17,10 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     nginx \
     build-essential \
-    openssl
+    openssl \ 
+    libexif-dev
 
-RUN docker-php-ext-install gd pdo pdo_mysql sockets ftp zip
+RUN docker-php-ext-install exif gd pdo pdo_mysql sockets ftp zip
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -28,13 +30,13 @@ RUN useradd -m -G www-data,root -u "$uid" -d "/home/$user" "$user" && \
     mkdir -p "/home/$user/.composer" && \
     chown -R "$user:$user" "/home/$user"
 
-WORKDIR /var/www
-
 # Copy SSL config if needed
-COPY ./openssl.cnf /etc/ssl/openssl.cnf
+COPY openssl.cnf /etc/ssl/openssl.cnf
 
 # Copy Nginx configuration
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+
+WORKDIR /var/www
 
 # Copy and install dependencies
 COPY composer.json composer.lock ./
