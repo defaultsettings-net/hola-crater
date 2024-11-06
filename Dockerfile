@@ -34,7 +34,7 @@ WORKDIR /var/www
 COPY ./openssl.cnf /etc/ssl/openssl.cnf
 
 # Copy Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # Copy and install dependencies
 COPY composer.json composer.lock ./
