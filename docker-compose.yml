@@ -19,7 +19,7 @@ services:
     image: nginx:1.17-alpine
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 80:3000
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
